@@ -14,15 +14,16 @@ class BookResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = $this->whenLoaded('users');
+        $user = $this->whenLoaded('user');
 
         return [
+            'writer' => new UserResource($user),      
             'book_id' => $this->id,
             'title' => $this->title ,
             'description' => $this->description,
             'created_on' => $this->created_at,
             'updated_on' => $this->updated_at,
-            'writer' => new UserResource($user)      
+            'coments' => ComentResource::collection($this->whenLoaded("coment"))
         ];
     }
 }

@@ -15,7 +15,7 @@ class BookController extends Controller
 
     public function show()
     {
-        $books = Book::with("users")->orderBy("created_at", "DESC");
+        $books = Book::with(["user", "coment.user"])->orderBy("created_at", "DESC");
         return BookResource::collection($books->paginate(8))->response(); 
     }
 
@@ -75,12 +75,18 @@ class BookController extends Controller
         ]);
     }
 
-    public function destroy(Book $book)
+    public function destroy(Book $book, Request $request)
     {
-        $book->delete();
+        if(auth()->user()->id === $book->user_id){
+            $book->delete();
+            return response()->json([
+                "success" => true,
+                "message" => "Deleted succesfully"
+            ]);
+        }
         return response()->json([
-            "success" => true,
-            "message" => "Deleted succesfully"
+            "success" => false,
+            "message" => "Invalid action"
         ]);
     }
 }

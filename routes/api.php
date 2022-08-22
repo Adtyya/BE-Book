@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CommentController;
+use App\Models\Comment;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -26,11 +28,19 @@ Route::group([
 
 });
 Route::group([
-    'middleware' => ["api"],
+    "middleware" => ['api'],
     "prefix" => 'v1/book'
 ], function() {
     Route::get('all', [BookController::class, ("show")]);
     Route::post("create", [BookController::class, ("store")]);
     Route::put("update", [BookController::class, ("edit")]);
     Route::delete("delete/{book}", [BookController::class, ('destroy')]);
+
+    // Route::get("test", function(){
+    //     $data = Comment::with("user")->get();
+    //     return response()->json([
+    //         "data" => $data
+    //     ]);
+    // });
+    Route::post("coment", [CommentController::class, ("store")]);
 });
