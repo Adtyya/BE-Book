@@ -21,11 +21,8 @@ return new class extends Migration
  
             // Foreign Key
             $table->bigInteger("user_id")->unsigned();
-
-        });
-
-        Schema::table('books', function($table) {
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
+
         });
     }
 

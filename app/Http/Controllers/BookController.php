@@ -15,12 +15,36 @@ class BookController extends Controller
 
     public function show()
     {
-        $books = Book::with("users")->orderBy("created_at", "DESC")->get();
+        $books = Book::with("users")->orderBy("created_at", "DESC");
+        return BookResource::collection($books->paginate(8))->response(); 
+    }
 
-        return response()->json([
-            "data" => $books
+    public function edit(Request $request)
+    {
+        $request->validate([
+            "book_id" => "required",
+            "title" => "required",
+            "description" => "required|min:8"
         ]);
-        // return BookResource::collection($books->paginate(8))->response(); 
+        try {
+            $id = $request->book_id;
+            $book = Book::findOrFail($id);
+            $book->fill([
+                "title" => $request->title,
+                "description" => $request->description
+            ]);
+            $book->save();
+            return response()->json([
+                "success" => true,
+                "message" => "Data updated!"
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Book not found"
+            ]);
+        }
+
     }
 
     public function store(Request $request)
@@ -48,6 +72,15 @@ class BookController extends Controller
         return response()->json([
             "success" => true,
             "data" => $create
+        ]);
+    }
+
+    public function destroy(Book $book)
+    {
+        $book->delete();
+        return response()->json([
+            "success" => true,
+            "message" => "Deleted succesfully"
         ]);
     }
 }

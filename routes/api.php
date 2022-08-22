@@ -31,4 +31,6 @@ Route::group([
 ], function() {
     Route::get('all', [BookController::class, ("show")]);
     Route::post("create", [BookController::class, ("store")]);
+    Route::put("update", [BookController::class, ("edit")]);
+    Route::delete("delete/{book}", [BookController::class, ('destroy')]);
 });
